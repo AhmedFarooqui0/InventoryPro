@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>InventoryPro – Admin Profile</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cyan:#00F5FF;--purple:#8B5CF6;--dark:#111827;--cyan-blue:#06B6D4;
+  --surface:rgba(17,24,39,0.9);--border:rgba(0,245,255,0.15);
+  --text:#e8eaf6;--muted:#8b91b0;--red:#f87171;--green:#34d399;
+}
+html,body{min-height:100%;font-family:'Segoe UI',sans-serif;background:var(--dark);color:var(--text)}
+body{position:relative;padding:0}
+.bg-wrap{position:fixed;inset:0;z-index:0;overflow:hidden}
+.bg-wrap::before{content:'';position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(139,92,246,0.15),transparent 60%);top:-200px;left:-200px}
+.bg-wrap::after{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(0,245,255,0.12),transparent 60%);bottom:-200px;right:-200px}
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,245,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,0.03) 1px,transparent 1px);background-size:50px 50px}
+
+/* NAV */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;padding:0 28px;gap:16px;background:rgba(10,14,26,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-brand{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:1px}
+.nav-spacer{flex:1}
+.back-btn{display:flex;align-items:center;gap:8px;padding:8px 18px;border-radius:10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:'Segoe UI',sans-serif;transition:all .3s}
+.back-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* MAIN */
+.page{padding:88px 28px 40px;max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.profile-grid{display:grid;grid-template-columns:340px 1fr;gap:24px;align-items:start}
+
+/* PROFILE CARD */
+.profile-card{background:rgba(17,24,39,0.9);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:24px;padding:36px 28px;text-align:center;position:relative;overflow:hidden}
+.profile-card::before{content:'';position:absolute;top:-60px;right:-60px;width:180px;height:180px;background:radial-gradient(circle,rgba(0,245,255,0.12),transparent 70%)}
+.profile-card::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:radial-gradient(circle,rgba(139,92,246,0.1),transparent 70%)}
+
+.avatar-wrap{position:relative;display:inline-block;margin-bottom:20px}
+.profile-avatar{width:130px;height:130px;border-radius:50%;border:3px solid transparent;background:linear-gradient(#111827,#111827) padding-box,linear-gradient(135deg,var(--cyan),var(--purple)) border-box;object-fit:cover;box-shadow:0 0 35px rgba(0,245,255,.35)}
+.avatar-ring{position:absolute;inset:-6px;border-radius:50%;border:2px dashed rgba(0,245,255,.3);animation:spinSlow 12s linear infinite}
+@keyframes spinSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.avatar-upload{position:absolute;bottom:4px;right:4px;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--cyan-blue));border:2px solid var(--dark);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:#fff;transition:all .3s}
+.avatar-upload:hover{transform:scale(1.15);box-shadow:0 0 15px rgba(0,245,255,.4)}
+
+.profile-name{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
+.profile-role{color:var(--cyan);font-size:13px;font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.profile-joined{color:var(--muted);font-size:12px;margin-bottom:28px}
+
+.stat-pills{display:flex;gap:12px;justify-content:center;margin-bottom:28px}
+.stat-pill{text-align:center;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:12px 18px;flex:1}
+.pill-val{font-size:20px;font-weight:700;color:var(--cyan)}
+.pill-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:3px}
+
+.detail-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.detail-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;transition:all .3s;text-align:left}
+.detail-item:hover{border-color:rgba(0,245,255,.2);transform:translateX(4px)}
+.detail-item i{color:var(--cyan);width:18px;font-size:15px;flex-shrink:0}
+.detail-item .detail-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.detail-item .detail-val{font-size:13.5px;color:var(--text);font-weight:500}
+
+.badge-online{display:inline-flex;align-items:center;gap:6px;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.3);color:var(--green);border-radius:99px;padding:5px 14px;font-size:12px;font-weight:600;margin-bottom:20px}
+.badge-online::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.4)}50%{box-shadow:0 0 0 5px rgba(52,211,153,0)}}
+
+/* EDIT PANEL */
+.edit-panel{display:flex;flex-direction:column;gap:20px}
+.panel-card{background:rgba(17,24,39,0.9);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:28px;transition:box-shadow .3s}
+.panel-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.panel-title{font-size:16px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:10px}
+.panel-title i{color:var(--cyan);font-size:16px}
+.panel-badge{font-size:11px;padding:3px 10px;border-radius:99px;background:rgba(0,245,255,.1);color:var(--cyan);border:1px solid rgba(0,245,255,.2)}
+
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{display:flex;flex-direction:column;gap:8px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.input-wrap{position:relative;display:flex;align-items:center}
+.input-wrap i.pfx{position:absolute;left:14px;color:rgba(0,245,255,.5);font-size:13px;pointer-events:none}
+.input-wrap input{width:100%;padding:12px 14px 12px 40px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;color:var(--text);font-size:13.5px;font-family:'Segoe UI',sans-serif;outline:none;transition:all .3s}
+.input-wrap input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,245,255,.1)}
+.input-wrap input:disabled{opacity:.5;cursor:not-allowed}
+.input-wrap .eye-btn{position:absolute;right:12px;background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;font-size:13px;transition:color .2s}
+.input-wrap .eye-btn:hover{color:var(--cyan)}
+
+.btn-primary{background:linear-gradient(135deg,var(--purple),var(--cyan-blue));color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Segoe UI',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:all .3s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 25px rgba(139,92,246,.4)}
+.btn-secondary{background:rgba(255,255,255,.05);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Segoe UI',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:all .3s}
+.btn-secondary:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-actions{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+
+/* Progress */
+.strength-bar{height:4px;border-radius:99px;background:rgba(255,255,255,.06);margin-top:8px;overflow:hidden}
+.strength-fill{height:100%;border-radius:99px;transition:all .4s ease}
+
+/* Toast */
+#toastContainer{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px}
+.toast{padding:14px 18px;border-radius:14px;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:10px;animation:toastIn .4s cubic-bezier(.175,.885,.32,1.275);min-width:260px}
+.toast-success{border:1px solid rgba(52,211,153,.4);color:var(--green);background:rgba(17,24,39,.97);box-shadow:0 0 30px rgba(52,211,153,.15)}
+.toast-error{border:1px solid rgba(248,113,113,.4);color:var(--red);background:rgba(17,24,39,.97);box-shadow:0 0 30px rgba(248,113,113,.15)}
+.toast-info{border:1px solid rgba(0,245,255,.4);color:var(--cyan);background:rgba(17,24,39,.97);box-shadow:0 0 30px rgba(0,245,255,.15)}
+@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+
+/* Avatar upload hidden */
+#avatarInput{display:none}
+
+/* Activity mini */
+.mini-activity{display:flex;flex-direction:column;gap:6px}
+.mini-act{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12.5px;color:var(--muted)}
+.mini-act:last-child{border-bottom:none}
+.mini-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.mini-dot.add{background:var(--green)}.mini-dot.edit{background:var(--cyan)}.mini-dot.sell{background:var(--purple)}.mini-dot.delete{background:var(--red)}
+
+@media(max-width:900px){.profile-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.form-grid-2{grid-template-columns:1fr}.stat-pills{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="bg-wrap"></div>
+<div class="grid-bg"></div>
+<div id="toastContainer"></div>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <span class="nav-brand"><i class="fa-solid fa-boxes-stacked" style="margin-right:8px;color:var(--cyan)"></i>InventoryPro</span>
+  <div class="nav-spacer"></div>
+  <a href="dashboard.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i>Back to Dashboard</a>
+</nav>
+
+<div class="page">
+  <div class="profile-grid">
+
+    <!-- LEFT: PROFILE CARD -->
+    <div>
+      <div class="profile-card">
+        <div class="avatar-wrap">
+          <img id="profileAvatar" src="https://i.pravatar.cc/200?img=12" alt="Admin" class="profile-avatar"/>
+          <div class="avatar-ring"></div>
+          <label class="avatar-upload" for="avatarInput" title="Change Photo"><i class="fa-solid fa-camera"></i></label>
+          <input type="file" id="avatarInput" accept="image/*" onchange="handleAvatarUpload(this)"/>
+        </div>
+        <div class="badge-online">Online Now</div>
+        <div class="profile-name" id="displayName">Administrator</div>
+        <div class="profile-role" id="displayRole">Super Admin</div>
+        <div class="profile-joined" id="displayJoined">Member since 2025</div>
+
+        <div class="stat-pills">
+          <div class="stat-pill"><div class="pill-val" id="pillProducts">0</div><div class="pill-label">Products</div></div>
+          <div class="stat-pill"><div class="pill-val" id="pillLow">0</div><div class="pill-label">Low Stock</div></div>
+          <div class="stat-pill"><div class="pill-val" id="pillSold">0</div><div class="pill-label">Units Sold</div></div>
+        </div>
+
+        <div class="detail-list">
+          <div class="detail-item"><i class="fa-solid fa-envelope"></i><div><div class="detail-label">Email</div><div class="detail-val" id="displayEmail">admin@inventorypro.com</div></div></div>
+          <div class="detail-item"><i class="fa-solid fa-phone"></i><div><div class="detail-label">Phone</div><div class="detail-val" id="displayPhone">+91 9876543210</div></div></div>
+          <div class="detail-item"><i class="fa-solid fa-location-dot"></i><div><div class="detail-label">Location</div><div class="detail-val" id="displayLocation">Pune, India</div></div></div>
+          <div class="detail-item"><i class="fa-solid fa-briefcase"></i><div><div class="detail-label">Role</div><div class="detail-val" id="displayRoleDetail">Inventory Manager</div></div></div>
+        </div>
+
+        <button class="btn-primary" style="width:100%;justify-content:center" onclick="scrollToEdit()"><i class="fa-solid fa-pen"></i>Edit Profile</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: EDIT PANELS -->
+    <div class="edit-panel" id="editPanel">
+
+      <!-- Edit Profile -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title"><i class="fa-solid fa-user-pen"></i>Edit Profile Information</div>
+          <span class="panel-badge">Personal Info</span>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>Full Name</label>
+            <div class="input-wrap"><i class="fa-solid fa-user pfx"></i><input type="text" id="editName" placeholder="Full name"/></div>
+          </div>
+          <div class="form-group">
+            <label>Username</label>
+            <div class="input-wrap"><i class="fa-solid fa-at pfx"></i><input type="text" id="editUsername" placeholder="Username"/></div>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <div class="input-wrap"><i class="fa-solid fa-envelope pfx"></i><input type="email" id="editEmail" placeholder="Email address"/></div>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <div class="input-wrap"><i class="fa-solid fa-phone pfx"></i><input type="tel" id="editPhone" placeholder="+91 XXXXXXXXXX"/></div>
+          </div>
+          <div class="form-group">
+            <label>Location</label>
+            <div class="input-wrap"><i class="fa-solid fa-location-dot pfx"></i><input type="text" id="editLocation" placeholder="City, Country"/></div>
+          </div>
+          <div class="form-group">
+            <label>Job Title</label>
+            <div class="input-wrap"><i class="fa-solid fa-briefcase pfx"></i><input type="text" id="editJobTitle" placeholder="e.g. Inventory Manager"/></div>
+          </div>
+        </div>
+        <div class="btn-actions">
+          <button class="btn-primary" onclick="saveProfile()"><i class="fa-solid fa-floppy-disk"></i>Save Changes</button>
+          <button class="btn-secondary" onclick="resetProfile()"><i class="fa-solid fa-rotate-left"></i>Reset</button>
+        </div>
+      </div>
+
+      <!-- Change Password -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title"><i class="fa-solid fa-lock"></i>Change Password</div>
+          <span class="panel-badge">Security</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="form-group">
+            <label>Current Password</label>
+            <div class="input-wrap">
+              <i class="fa-solid fa-lock pfx"></i>
+              <input type="password" id="currentPass" placeholder="Current password"/>
+              <button class="eye-btn" onclick="toggleEye('currentPass',this)"><i class="fa-solid fa-eye"></i></button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <div class="input-wrap">
+              <i class="fa-solid fa-key pfx"></i>
+              <input type="password" id="newPass" placeholder="New password (min 6 chars)" oninput="checkStrength()"/>
+              <button class="eye-btn" onclick="toggleEye('newPass',this)"><i class="fa-solid fa-eye"></i></button>
+            </div>
+            <div class="strength-bar"><div class="strength-fill" id="strengthFill" style="width:0%;background:var(--red)"></div></div>
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <div class="input-wrap">
+              <i class="fa-solid fa-shield-halved pfx"></i>
+              <input type="password" id="confirmPass" placeholder="Repeat new password"/>
+              <button class="eye-btn" onclick="toggleEye('confirmPass',this)"><i class="fa-solid fa-eye"></i></button>
+            </div>
+          </div>
+        </div>
+        <div class="btn-actions">
+          <button class="btn-primary" onclick="changePassword()"><i class="fa-solid fa-lock"></i>Update Password</button>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title"><i class="fa-solid fa-clock-rotate-left"></i>Recent Activity</div>
+          <a href="dashboard.html" class="back-btn" style="padding:5px 12px;font-size:12px">View All</a>
+        </div>
+        <div class="mini-activity" id="miniActivity">
+          <div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">No activity yet.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* Load user session */
+const sess=sessionStorage.getItem('inv_session')||localStorage.getItem('inv_session');
+if(!sess){window.location.href='login.html';}
+const user=JSON.parse(sess||'{}');
+
+/* Profile data from localStorage */
+let profileData=JSON.parse(localStorage.getItem('inv_profileData')||'{}');
+
+function loadProfile(){
+  const name=profileData.name||user.name||'Administrator';
+  const username=profileData.username||user.username||'admin';
+  const email=profileData.email||user.email||'admin@inventorypro.com';
+  const phone=profileData.phone||'+91 9876543210';
+  const location=profileData.location||'Pune, India';
+  const role=profileData.role||user.role||'Super Admin';
+  const jobTitle=profileData.jobTitle||'Inventory Manager';
+  const joined=profileData.joined||user.joined||(new Date().getFullYear());
+
+  document.getElementById('displayName').textContent=name;
+  document.getElementById('displayRole').textContent=role;
+  document.getElementById('displayRoleDetail').textContent=jobTitle;
+  document.getElementById('displayJoined').textContent=`Member since ${new Date(joined).getFullYear?.()??joined}`;
+  document.getElementById('displayEmail').textContent=email;
+  document.getElementById('displayPhone').textContent=phone;
+  document.getElementById('displayLocation').textContent=location;
+
+  document.getElementById('editName').value=name;
+  document.getElementById('editUsername').value=username;
+  document.getElementById('editEmail').value=email;
+  document.getElementById('editPhone').value=phone;
+  document.getElementById('editLocation').value=location;
+  document.getElementById('editJobTitle').value=jobTitle;
+
+  // Stats
+  const products=JSON.parse(localStorage.getItem('inv_products')||'[]');
+  document.getElementById('pillProducts').textContent=products.length;
+  document.getElementById('pillLow').textContent=products.filter(p=>p.quantity<=(p.threshold||10)).length;
+  document.getElementById('pillSold').textContent=localStorage.getItem('inv_sold')||'0';
+
+  // Avatar
+  const savedAvatar=localStorage.getItem('inv_avatar');
+  if(savedAvatar)document.getElementById('profileAvatar').src=savedAvatar;
+
+  // Activity
+  const log=JSON.parse(localStorage.getItem('inv_activity')||'[]');
+  const ma=document.getElementById('miniActivity');
+  if(log.length){
+    ma.innerHTML=log.slice(0,5).map(a=>`<div class="mini-act"><span class="mini-dot ${a.type}"></span><span style="flex:1">${a.text}</span><span>${a.time}</span></div>`).join('');
+  }
+}
+
+function saveProfile(){
+  const name=document.getElementById('editName').value.trim();
+  const username=document.getElementById('editUsername').value.trim();
+  const email=document.getElementById('editEmail').value.trim();
+  const phone=document.getElementById('editPhone').value.trim();
+  const location=document.getElementById('editLocation').value.trim();
+  const jobTitle=document.getElementById('editJobTitle').value.trim();
+  if(!name||!email){showToast('Name and email are required.','error');return;}
+  if(!email.includes('@')){showToast('Enter a valid email.','error');return;}
+  const newProfile={...profileData,name,username,email,phone,location,jobTitle,role:user.role||'Super Admin',joined:user.joined||new Date().toISOString()};
+  localStorage.setItem('inv_profileData',JSON.stringify(newProfile));
+  // Update session
+  const updated={...user,...newProfile};
+  if(localStorage.getItem('inv_session'))localStorage.setItem('inv_session',JSON.stringify(updated));
+  else sessionStorage.setItem('inv_session',JSON.stringify(updated));
+  profileData=newProfile;
+  loadProfile();
+  showToast('✅ Profile updated successfully!','success');
+}
+
+function resetProfile(){loadProfile();showToast('Profile reset.','info');}
+
+function changePassword(){
+  const cur=document.getElementById('currentPass').value;
+  const np=document.getElementById('newPass').value;
+  const cp=document.getElementById('confirmPass').value;
+  if(!cur||!np||!cp){showToast('Fill all password fields.','error');return;}
+  // Check current password
+  const users=JSON.parse(localStorage.getItem('inv_users')||'[]');
+  const isDefault=user.username==='admin'&&cur==='admin123';
+  const found=users.find(u=>u.username===user.username&&u.password===cur);
+  if(!found&&!isDefault){showToast('Current password is incorrect.','error');return;}
+  if(np.length<6){showToast('New password must be at least 6 chars.','error');return;}
+  if(np!==cp){showToast('Passwords do not match.','error');return;}
+  // Save
+  if(found){found.password=np;localStorage.setItem('inv_users',JSON.stringify(users));}
+  document.getElementById('currentPass').value='';document.getElementById('newPass').value='';document.getElementById('confirmPass').value='';
+  document.getElementById('strengthFill').style.width='0%';
+  showToast('🔒 Password changed successfully!','success');
+}
+
+function checkStrength(){
+  const v=document.getElementById('newPass').value;
+  const fill=document.getElementById('strengthFill');
+  let score=0;
+  if(v.length>=6)score++;if(v.length>=10)score++;if(/[A-Z]/.test(v))score++;if(/[0-9]/.test(v))score++;if(/[^a-zA-Z0-9]/.test(v))score++;
+  const pct=[0,20,40,65,85,100][score];
+  const colors=['','#f87171','#fbbf24','#fbbf24','#34d399','#34d399'][score];
+  fill.style.width=pct+'%';fill.style.background=colors;
+}
+
+function toggleEye(id,btn){
+  const inp=document.getElementById(id);
+  inp.type=inp.type==='password'?'text':'password';
+  btn.innerHTML=inp.type==='text'?'<i class="fa-solid fa-eye-slash"></i>':'<i class="fa-solid fa-eye"></i>';
+}
+
+function handleAvatarUpload(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById('profileAvatar').src=e.target.result;
+    localStorage.setItem('inv_avatar',e.target.result);
+    showToast('📸 Profile picture updated!','success');
+  };
+  reader.readAsDataURL(file);
+}
+
+function scrollToEdit(){document.getElementById('editPanel').scrollIntoView({behavior:'smooth',block:'start'});}
+
+function showToast(msg,type='success'){
+  const t=document.createElement('div');
+  t.className=`toast toast-${type}`;
+  const icons={success:'circle-check',error:'circle-xmark',info:'circle-info'};
+  t.innerHTML=`<i class="fa-solid fa-${icons[type]}"></i>${msg}`;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(()=>{t.style.animation='toastIn .4s ease reverse';setTimeout(()=>t.remove(),400)},3500);
+}
+
+// Init
+loadProfile();
+document.body.style.opacity=0;document.body.style.transition='opacity .5s';
+setTimeout(()=>document.body.style.opacity=1,50);
+</script>
+</body>
+</html>
